@@ -5,6 +5,7 @@ import json
 from flask import Flask, request, jsonify, abort, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
+import wsgiserver
 app = Flask(__name__)
 CORS(app)
 app.config['UPLOAD_FOLDER'] = 'files'
@@ -120,6 +121,9 @@ def download(filename):
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     return send_from_directory(directory=uploads, path=filename)
 
-app.run(debug=True)
+# app.run(debug=True)
+if __name__ == "__main__":
+    server = wsgiserver.WSGIServer(app, host='127.0.0.1',port=5000)
+    server.start()
 
 
