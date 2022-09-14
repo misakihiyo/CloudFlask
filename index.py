@@ -10,6 +10,10 @@ CORS(app)
 app.config['UPLOAD_FOLDER'] = 'files'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
+@app.route('/', methods=['GET'])
+def get_and_return():
+    return jsonify({"check":"value"})
+
 @app.route('/user', methods=['GET'])
 def query_records():
     name = request.args.get('name')
