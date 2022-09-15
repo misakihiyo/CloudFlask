@@ -46,7 +46,7 @@ def login_user():
                 if record['password'] == rec['password']:
                     return jsonify({"username": rec['username']}),200
                 else:
-                    return jsonify({'error': "passworod incorrect"}),200
+                    return jsonify({'error': "password incorrect"}),400
     return jsonify({"error": "user does not exist"}), 400
 
 @app.route('/register-user', methods=['POST'])
