@@ -133,7 +133,7 @@ def upload_file(username):
                 new_records.append(record)
             with open('data.txt', 'w') as f:
                 f.write(json.dumps(new_records, indent=2))
-            return ({"message": "upload success"}), 200
+            return ({"message": "upload success", "count": total_words}), 200
 
 @app.route('/download/<path:filename>', methods=['GET', 'POST'])
 def download(filename):
