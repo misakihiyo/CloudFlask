@@ -5,7 +5,7 @@ import json
 from flask import Flask, request, jsonify, abort, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-import wsgiserver
+# import wsgiserver
 app = Flask(__name__)
 CORS(app)
 app.config['UPLOAD_FOLDER'] = 'files'
@@ -45,7 +45,6 @@ def create_record():
             if record['username'] == rec['username']:
                 return jsonify({"error": "user already exists"}),400
         records.append(record)
-        print(records)
     with open('data.txt', 'w') as f:
         f.write(json.dumps(records, indent=2))
     return jsonify(record), 200
@@ -57,17 +56,15 @@ def update_record():
     with open('data.txt', 'r') as f:
         data = f.read()
     if not data:
-        return jsonify({"error": "user does not exist"}),400
-    else: 
+        return jsonify({"error": "No records in database"}),400
+    else:
         records = json.loads(data)
-    for record in records:
-        if record['username'] == request_data['username']:
-            record['fname'] = request_data['fname']
-            record['lname'] = request_data['lname']
-            record['email'] = request_data['email']
-        else: 
-            return jsonify({"error": "user does not exist"}),400
-        new_records.append(record)
+        for rec in records: 
+            if request_data['username'] == rec['username']:
+                rec['fname'] = request_data['fname']
+                rec['lname'] = request_data['lname']
+                rec['email'] = request_data['email']
+            new_records.append(rec)
         
     with open('data.txt', 'w') as f:
         f.write(json.dumps(new_records, indent=2))
@@ -121,9 +118,9 @@ def download(filename):
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     return send_from_directory(directory=uploads, path=filename)
 
-# app.run(debug=True)
-if __name__ == "__main__":
-    server = wsgiserver.WSGIServer(app, host='127.0.0.1',port=5000)
-    server.start()
+app.run(debug=True)
+# if __name__ == "__main__":
+#     server = wsgiserver.WSGIServer(app, host='127.0.0.1',port=5000)
+#     server.start()
 
 
