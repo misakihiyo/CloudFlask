@@ -120,7 +120,7 @@ def upload_file(username):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             total_words=0
-            with open(filename, 'r') as fn:
+            with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'r') as fn:
                 read_data = fn.read()
                 total_words = read_data.split()
             with open('data.txt', 'r') as f:
