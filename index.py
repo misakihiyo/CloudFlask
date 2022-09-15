@@ -5,7 +5,7 @@ import json
 from flask import Flask, request, jsonify, abort, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-# import wsgiserver
+import wsgiserver
 app = Flask(__name__)
 CORS(app)
 app.config['UPLOAD_FOLDER'] = 'files'
@@ -31,6 +31,23 @@ def query_records():
             if record['username'] == name:
                 return jsonify(record), 200
     return jsonify({status: 400, 'error': 'user does not exist'}), 400
+
+@app.route('/login-user', methods=['POST'])
+def login_user():
+    record = json.loads(request.data)
+    with open('data.txt', 'r') as f:
+        data = f.read()
+    if not data:
+        return jsonify({"error": "No records in database"}),400
+    else:
+        records = json.loads(data)
+        for rec in records: 
+            if record['username'] == rec['username']:
+                if record['password'] == rec['password']:
+                    return jsonify({"username": rec['username']}),200
+                else:
+                    return jsonify({'error': "passworod incorrect"}),200
+    return jsonify({"error": "user does not exist"}), 400
 
 @app.route('/register-user', methods=['POST'])
 def create_record():
@@ -118,9 +135,9 @@ def download(filename):
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     return send_from_directory(directory=uploads, path=filename)
 
-app.run(debug=True)
-# if __name__ == "__main__":
-#     server = wsgiserver.WSGIServer(app, host='127.0.0.1',port=5000)
-#     server.start()
+# app.run()
+if __name__ == "__main__":
+    server = wsgiserver.WSGIServer(app, host='127.0.0.1',port=5000)
+    server.start()
 
 
