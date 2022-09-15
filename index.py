@@ -119,12 +119,17 @@ def upload_file(username):
             new_records = []
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            total_words=0
+            with open(filename, 'r') as fn:
+                read_data = fn.read()
+                total_words = read_data.split()
             with open('data.txt', 'r') as f:
                 data = f.read()
                 records = json.loads(data)
             for record in records:
                 if record['username'] == username:
                     record['filename'] = filename
+                    record['count'] = len(total_words)
                 new_records.append(record)
             with open('data.txt', 'w') as f:
                 f.write(json.dumps(new_records, indent=2))
